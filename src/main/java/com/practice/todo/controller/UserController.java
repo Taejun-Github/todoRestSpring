@@ -24,14 +24,14 @@ public class UserController {
     private final UserService userService;
     private final TokenProvider tokenProvider;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDTO) {
         try {
             UserEntity user = UserEntity.builder().email(userDTO.getEmail())
                     .username(userDTO.getUsername())
-                    .password(userDTO.getPassword())
+                    .password(passwordEncoder.encode(userDTO.getPassword()))
                     .build();
             UserEntity registeredUser = userService.create(user);
             UserDTO responseUserDTO = UserDTO.builder().email(registeredUser.getEmail())
